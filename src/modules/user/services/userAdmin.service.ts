@@ -3,7 +3,6 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 import { CreateUserDto } from '../../../requests/user/createUser';
 import { UpdateUserDto } from '../../../requests/user/updateUser';
 import { PaginationDto } from '../../../requests/pagination/pagination.dto';
-import RoadmapNotFoundException from '../../../exceptions/roadmap/RoadmapNotFound.exception';
 
 @Injectable()
 export class UserAdminService {
@@ -28,7 +27,27 @@ export class UserAdminService {
       totalPages: Math.ceil(total / limit),
     };
   }
-
+  // async getMessages(userId: number) {
+  //   const conversations = await this.prisma.conversation.findMany({
+  //     where: {
+  //       Participants: {
+  //         some: {
+  //           userId: userId,
+  //         },
+  //       },
+  //     },
+  //     include: {
+  //       Participants: true,
+  //       Messages: {
+  //         orderBy: {
+  //           created_at: 'asc',
+  //         },
+  //       },
+  //     },
+  //   });
+  //
+  //   return conversations;
+  // }
   async createUser(data: CreateUserDto) {
     const user = await this.prisma.user.create({
       data: {

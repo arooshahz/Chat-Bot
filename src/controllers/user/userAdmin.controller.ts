@@ -10,6 +10,9 @@ import { CreateUserDto } from '../../requests/user/createUser';
 import { UpdateUserDto } from '../../requests/user/updateUser';
 import { UserRoleEnum } from 'src/modules/user/enum/user-role.enum';
 import { PaginationDto } from '../../requests/pagination/pagination.dto';
+import { ChatbotService } from '../../modules/chatbot/services/chatbot.service';
+import { GetUser } from "../../decorators/auth/get-user.decorator";
+import { Message, User } from "@prisma/client";
 
 @ApiBearerAuth('access-token')
 @ApiTags('Admin')
@@ -17,6 +20,7 @@ import { PaginationDto } from '../../requests/pagination/pagination.dto';
 export class UserAdminController {
   constructor(
     private userService: UserService,
+    private chatBotService: ChatbotService,
     private adminService: UserAdminService,
   ) {}
 
@@ -27,6 +31,21 @@ export class UserAdminController {
     return this.adminService.findAll(paginationDto);
   }
 
+  @UseGuards(JwtGuard, RolesGuard)
+  @Get('conversation/:id')
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)
+  async getConversationAdmin(@Param('id') id: number) {
+    return this.chatBotService.get_conversations(id);
+  }
+  @UseGuards(JwtGuard, RolesGuard)
+  @Get('conversation/:conversationId/:userId')
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)
+  async getMessagesAdmin(
+    @Param('conversationId') conversationId: string,
+    @Param('userId') userId: number,
+  ): Promise<Message[]> {
+    return this.chatBotService.get_messages(userId, +conversationId);
+  }
   @UseGuards(JwtGuard, RolesGuard)
   @Post('')
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)
