@@ -38,6 +38,7 @@
     "class-validator": "^0.14.1",
     "es6-shim": "^0.35.8",
     "nodemailer": "^6.10.0",
+    "openai": "^4.80.1",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",

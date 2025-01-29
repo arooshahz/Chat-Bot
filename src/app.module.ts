@@ -14,6 +14,8 @@ import { AuthController } from './controllers/auth/auth.controller';
 import { UserController } from './controllers/user/user.controller';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { UserAdminController } from './controllers/user/userAdmin.controller';
+import { ChatbotModule } from "./modules/chatbot/chatbot.module";
+import { ChatbotController } from './controllers/chatbot/chatbot.controller';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { UserAdminController } from './controllers/user/userAdmin.controller';
     AuthModule,
     OnboardingModule,
     UserModule,
+    ChatbotModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
