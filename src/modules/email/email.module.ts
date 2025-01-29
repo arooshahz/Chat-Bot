@@ -9,8 +9,8 @@ import { EmailService } from './services/email.service';
         host: process.env.EMAIL_HOST,
         port: parseInt(process.env.EMAIL_PORT),
         secure: false,
-        tls:{
-            ciphers:'SSLv3',
+        tls: {
+          ciphers: 'SSLv3',
         },
         auth: {
           user: process.env.EMAIL_USER,

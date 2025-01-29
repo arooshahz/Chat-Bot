@@ -54,7 +54,7 @@ export class UserService {
       },
     });
     if (user !== null){
-      return {registered: true}
+      return { registered: true };
     }
     return {registered: false}
   }
