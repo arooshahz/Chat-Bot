@@ -12,7 +12,7 @@ export class EmailService {
 
 
 
-    const templatePath =  path.join(process.cwd(), 'src/pa views', 'otp-verification-email.ejs');
+    const templatePath =  path.join(process.cwd(), 'src/views', 'otp-verification-email.ejs');
     // const templatePath = path.join('/dist/views', `${template}.ejs`);
     const templateContent = fs.readFileSync(templatePath, 'utf8');
     const html = ejs.render(templateContent, context);
