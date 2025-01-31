@@ -12,7 +12,7 @@ import { UserRoleEnum } from 'src/modules/user/enum/user-role.enum';
 import { PaginationDto } from '../../requests/pagination/pagination.dto';
 import { ChatbotService } from '../../modules/chatbot/services/chatbot.service';
 import { GetUser } from "../../decorators/auth/get-user.decorator";
-import { Message, User } from "@prisma/client";
+import { Message, User } from '@prisma/client';
 
 @ApiBearerAuth('access-token')
 @ApiTags('Admin')
@@ -35,7 +35,7 @@ export class UserAdminController {
   @Get('conversation/:id')
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)
   async getConversationAdmin(@Param('id') id: number) {
-    return this.chatBotService.get_conversations(id);
+    return this.chatBotService.get_conversations(+id);
   }
   @UseGuards(JwtGuard, RolesGuard)
   @Get('conversation/:conversationId/:userId')
@@ -44,7 +44,7 @@ export class UserAdminController {
     @Param('conversationId') conversationId: string,
     @Param('userId') userId: number,
   ): Promise<Message[]> {
-    return this.chatBotService.get_messages(userId, +conversationId);
+    return this.adminService.get_messages(+userId, +conversationId);
   }
   @UseGuards(JwtGuard, RolesGuard)
   @Post('')

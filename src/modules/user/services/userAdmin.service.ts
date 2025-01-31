@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { CreateUserDto } from '../../../requests/user/createUser';
 import { UpdateUserDto } from '../../../requests/user/updateUser';
@@ -27,27 +27,29 @@ export class UserAdminService {
       totalPages: Math.ceil(total / limit),
     };
   }
-  // async getMessages(userId: number) {
-  //   const conversations = await this.prisma.conversation.findMany({
-  //     where: {
-  //       Participants: {
-  //         some: {
-  //           userId: userId,
-  //         },
-  //       },
-  //     },
-  //     include: {
-  //       Participants: true,
-  //       Messages: {
-  //         orderBy: {
-  //           created_at: 'asc',
-  //         },
-  //       },
-  //     },
-  //   });
-  //
-  //   return conversations;
-  // }
+  async get_messages(userId: number, conversationId: number) {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+      },
+    });
+
+    if (!conversation) {
+      throw new BadRequestException(
+        'there is no messages in this conversation.',
+      );
+    }
+    const messages = await this.prisma.message.findMany({
+      where: {
+        conversationId,
+      },
+      orderBy: {
+        created_at: 'asc',
+      },
+    });
+
+    return messages;
+  }
   async createUser(data: CreateUserDto) {
     const user = await this.prisma.user.create({
       data: {
