@@ -90,8 +90,22 @@ CREATE TABLE "BotProvider" (
     CONSTRAINT "BotProvider_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "UserMessageLimit" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "messageLimit" INTEGER,
+    "usedMessages" INTEGER NOT NULL DEFAULT 0,
+    "resetDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserMessageLimit_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserMessageLimit_userId_key" ON "UserMessageLimit"("userId");
 
 -- AddForeignKey
 ALTER TABLE "Participant" ADD CONSTRAINT "Participant_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

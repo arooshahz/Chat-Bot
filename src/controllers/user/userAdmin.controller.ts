@@ -31,6 +31,15 @@ export class UserAdminController {
     return this.adminService.findAll(paginationDto);
   }
 
+
+  @Post('set-limit/:userId')
+  async setMessageLimit(
+    @Param('userId') userId: number,
+    @Body('limit') limit: number | null,
+  ) {
+    return this.adminService.setMessageLimit(+userId, limit);
+  }
+
   @UseGuards(JwtGuard, RolesGuard)
   @Get('conversation/:id')
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)

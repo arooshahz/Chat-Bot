@@ -15,6 +15,9 @@ export class UserAdminService {
       this.prisma.user.findMany({
         skip: skip,
         take: limit,
+        include: {
+          messageLimit: true,
+        },
       }),
       this.prisma.user.count(),
     ]);
@@ -27,6 +30,26 @@ export class UserAdminService {
       totalPages: Math.ceil(total / limit),
     };
   }
+
+
+  async setMessageLimit(userId: number, limit: number | null) {
+    const userLimit = await this.prisma.userMessageLimit.upsert({
+      where: { userId },
+      update: { messageLimit: limit, usedMessages: 0, resetDate: new Date() },
+      create: {
+        userId,
+        messageLimit: limit,
+        usedMessages: 0,
+        resetDate: new Date(),
+      },
+    });
+
+    return userLimit;
+  }
+
+
+
+
   async get_messages(userId: number, conversationId: number) {
     const conversation = await this.prisma.conversation.findFirst({
       where: {

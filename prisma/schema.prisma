@@ -29,7 +29,7 @@ model User {
   deletedAt                 DateTime?
   created_at                DateTime   @default(now())
 
-
+  messageLimit UserMessageLimit? @relation("UserLimit")
   @@map("users")
 }
 
@@ -106,4 +106,14 @@ model BotProvider{
   token          String
 
   Bots   Bot[]
+}
+
+model UserMessageLimit {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  messageLimit  Int?
+  usedMessages  Int      @default(0)
+  resetDate    DateTime @default(now())
+
+  User           User?         @relation("UserLimit", fields: [userId], references: [id])
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ChatbotService } from '../../modules/chatbot/services/chatbot.service';
 import { ChatRequest } from '../../modules/chatbot/interfaces/chatRequest';
 import { ChatResponse } from '../../modules/chatbot/interfaces/chatResponse';
@@ -9,8 +9,7 @@ import { Message, Conversation, User } from '@prisma/client';
 
 @Controller('chatbot')
 export class ChatbotController {
-  constructor(private readonly chatbotService: ChatbotService) {
-  }
+  constructor(private readonly chatbotService: ChatbotService) {}
 
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)

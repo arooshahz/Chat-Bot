@@ -46,33 +46,26 @@ export class ChatbotService {
         id: botId,
       },
     });
-
     if (!bot) {
       throw new Error('Bot not found.');
     }
-
     const provider = await this.prisma.botProvider.findUnique({
       where: { id: bot.providerId },
     });
-
     if (!provider) {
       throw new Error('Provider not found for the selected bot.');
     }
-
     await this.initializeProvider(provider.token, provider.model);
-
     const response = await this.provider.chat.completions.create({
       model: this.model ?? 'gpt-3.5-turbo',
       messages: inputs.messages,
     });
-
     const userMessage = inputs.messages.find(
       (message) => message.role === OpenAiChatRoleEnum.USER,
     );
     if (!userMessage) {
       throw new Error('User message not found.');
     }
-
     if (!conversationId) {
       const conversation = await this.prisma.conversation.create({
         data: {
@@ -100,16 +93,44 @@ export class ChatbotService {
         );
       }
     }
-
     await this.saveMessage(conversationId, userId, userMessage.content);
     const botMessage = response.choices[0]?.message?.content;
     await this.saveMessage(conversationId, bot.id, botMessage);
-
     return {
       conversationId,
       botMessage,
     };
   }
+
+
+
+  // async checkMessageLimit(userId: number): Promise<boolean> {
+  //   const userLimit = await this.prisma.userMessageLimit.findUnique({
+  //     where: { userId },
+  //   });
+  //
+  //   if (!userLimit || userLimit.messageLimit === null) {
+  //     return true;
+  //   }
+  //
+  //   // اگر تاریخ ریست گذشته، محدودیت رو ریست کن
+  //   const now = new Date();
+  //   if (now > userLimit.resetDate) {
+  //     await this.prisma.userMessageLimit.update({
+  //       where: { userId },
+  //       data: { usedMessages: 0, resetDate: now },
+  //     });
+  //     return true;
+  //   }
+  //
+  //   // اگر تعداد پیام‌های استفاده شده از محدودیت بیشتر شده
+  //   if (userLimit.usedMessages >= userLimit.messageLimit) {
+  //     return false; // اجازه ارسال پیام نده
+  //   }
+  //
+  //   return true; // اجازه ارسال پیام بده
+  // }
+
 
   private async findOrCreateParticipant(
     conversationId: number,
