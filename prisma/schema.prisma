@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        Int        @id @default(autoincrement())
+  email                     String     @unique
+  fullName                  String?
+  profilePicAttachmentId    Int?
+  profileBannerAttachmentId Int?
+  password_hash             String
+  role                      String     @default("user")
+  birthdate                 DateTime?
+  bio                       String?
+  disableAt                 DateTime?
+  participants              Participant[] @relation("UserParticipants")
+  updatedAt                 DateTime   @updatedAt
+  deletedAt                 DateTime?
+  created_at                DateTime   @default(now())
+
+  messageLimit UserMessageLimit? @relation("UserLimit")
+  @@map("users")
+}
+
+model OTP {
+  id        Int       @id @default(autoincrement())
+  code      String
+  email     String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  isActive  Boolean   @default(true)
+}
+model Participant {
+  id              Int       @id @default(autoincrement())
+  conversationId  Int
+  userId          Int?
+  botId           Int?
+  role            String
+  deletedAt       DateTime?
+
+  // Relations
+  Conversation    Conversation @relation(fields: [conversationId], references: [id])
+  User           User?         @relation("UserParticipants", fields: [userId], references: [id])
+  Bot            Bot?          @relation("BotParticipants", fields: [botId], references: [id])
+
+  Messages      Message[]
+}
+
+model Message {
+  id              Int       @id @default(autoincrement())
+  conversationId  Int
+  participantId   Int
+  content         String     @db.Text()
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
+  created_at      DateTime   @default(now())
+
+  //Relations
+  Participant     Participant @relation(fields: [participantId], references: [id])
+  Conversation    Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Conversation{
+  id                 Int       @id @default(autoincrement())
+  conversationType   String
+  title              String
+  stepId             Int?
+  updatedAt          DateTime   @updatedAt
+  deletedAt          DateTime?
+  created_at         DateTime   @default(now())
+
+
+  Participants       Participant[]
+  Messages           Message[]
+}
+
+model Bot{
+  id                      Int       @id @default(autoincrement())
+  ProfilePicAttachmentId  Int
+  name                    String
+  providerId              Int
+  accessType              String
+  participants   Participant[] @relation("BotParticipants")
+
+  //Relations
+  provider               BotProvider  @relation(fields: [providerId], references: [id])
+}
+
+model BotProvider{
+  id             Int       @id @default(autoincrement())
+  type           String
+  model          String
+  token          String
+
+  Bots   Bot[]
+}
+
+model UserMessageLimit {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  messageLimit  Int?
+  usedMessages  Int      @default(0)
+  resetDate    DateTime @default(now())
+
+  User           User?         @relation("UserLimit", fields: [userId], references: [id])
+}

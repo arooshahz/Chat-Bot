@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your One-Time Password (OTP)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+        .otp-box { background-color: #f9f9f9; border-left: 5px solid #004aad; padding: 10px; margin-top: 20px; font-size: 20px; font-weight: bold; text-align: center; }
+        .content { margin-top: 20px; }
+        .footer { margin-top: 20px; font-size: 12px; text-align: center; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <p>Hello <%= email %>,</p>
+        <p>You've requested a one-time password (OTP) to proceed with your request. Please find your OTP below:</p>
+        <div class="otp-box">
+            <%= code %>
+        </div>
+        <p>Please use this code within the next 5 minutes. Do not share this code with anyone.</p>
+    </div>
+    <div class="footer">
+        Need help? Contact us at <a href="mailto:support@hoperise.com">support@hoperise.com</a>
+    </div>
+</body>
+</html>
